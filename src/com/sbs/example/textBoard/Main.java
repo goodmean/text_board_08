@@ -1,4 +1,4 @@
-package com.sbs.example.textBorad;
+package com.sbs.example.textBoard;
 
 public class Main {
 	public static void main(String[] args) {

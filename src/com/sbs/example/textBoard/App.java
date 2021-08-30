@@ -1,4 +1,4 @@
-package com.sbs.example.textBorad;
+package com.sbs.example.textBoard;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,7 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
+import com.sbs.example.textBoard.util.DBUtil;
+import com.sbs.example.textBoard.util.SecSql;
 
 public class App {
 	public void run() {
@@ -58,10 +62,7 @@ public class App {
 
 	private int doAction(Connection conn, Scanner sc, String command) {
 
-		int lastArticleId = 0;
-
 		if (command.equals("article write")) {
-			int id = lastArticleId + 1;
 			String title;
 			String body;
 
@@ -71,35 +72,17 @@ public class App {
 			System.out.printf("내용 : ");
 			body = sc.nextLine();
 
-			PreparedStatement pstat = null;
+			SecSql sql = new SecSql();
 
-			try {
+			sql.append("INSERT INTO article");
+			sql.append("SET regDate = NOW()");
+			sql.append(", updateDate = NOW()");
+			sql.append(", title = ?", title);
+			sql.append(", `body` = ?", body);
 
-				String sql = "INSERT INTO article";
-				sql += " SET regDate = NOW()";
-				sql += ", updateDate = NOW()";
-				sql += ", title = \'" + title + "\'";
-				sql += ", `body` = \'" + body + "\';";
+			int id = DBUtil.insert(conn, sql);
 
-				pstat = conn.prepareStatement(sql);
-				int affectedRows = pstat.executeUpdate();
-
-				System.out.println("affectedRows : " + affectedRows);
-
-			} catch (SQLException e) {
-				System.out.println("에러: " + e);
-			} finally {
-
-				try {
-					if (pstat != null && !pstat.isClosed()) {
-						pstat.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-
-			lastArticleId++;
+			System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
 
 		} else if (command.startsWith("article modify ")) {
 			int id = Integer.parseInt(command.split(" ")[2]);
@@ -112,33 +95,15 @@ public class App {
 			System.out.printf("새 내용 : ");
 			body = sc.nextLine();
 
-			PreparedStatement pstat = null;
+			SecSql sql = new SecSql();
 
-			try {
+			sql.append("UPDATE article");
+			sql.append("SET updateDate = NOW()");
+			sql.append(", title = ?", title);
+			sql.append(", `body` = ?", body);
+			sql.append("WHERE id = ?", id);
 
-				String sql = "UPDATE article";
-				sql += " SET updateDate = NOW()";
-				sql += ", title = \'" + title + "\'";
-				sql += ", `body` = \'" + body + "\'";
-				sql += " WHERE id = " + id;
-
-				pstat = conn.prepareStatement(sql);
-				int affectedRows = pstat.executeUpdate();
-
-				System.out.println("affectedRows : " + affectedRows);
-
-			} catch (SQLException e) {
-				System.out.println("에러: " + e);
-			} finally {
-
-				try {
-					if (pstat != null && !pstat.isClosed()) {
-						pstat.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			DBUtil.update(conn, sql);
 
 			System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
 
@@ -147,49 +112,16 @@ public class App {
 
 			List<Article> articles = new ArrayList<>();
 
-			PreparedStatement pstat = null;
-			ResultSet rs = null;
+			SecSql sql = new SecSql();
 
-			try {
+			sql.append("SELECT *");
+			sql.append("FROM article");
+			sql.append("ORDER BY id DESC");
 
-				String sql = "SELECT *";
-				sql += " FROM article";
-				sql += " ORDER BY id DESC;";
+			List<Map<String, Object>> articlesListMap = DBUtil.selectRows(conn, sql);
 
-//				System.out.println(sql);
-
-				pstat = conn.prepareStatement(sql);
-				rs = pstat.executeQuery(sql);
-
-				while (rs.next()) {
-					int id = rs.getInt("id");
-					String regDate = rs.getString("regDate");
-					String updateDate = rs.getString("updateDate");
-					String title = rs.getString("title");
-					String body = rs.getString("body");
-
-					Article article = new Article(id, regDate, updateDate, title, body);
-					articles.add(article);
-				}
-
-			} catch (SQLException e) {
-				System.out.println("에러: " + e);
-			} finally {
-				try {
-					if (rs != null && !rs.isClosed()) {
-						rs.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				try {
-					if (pstat != null && !pstat.isClosed()) {
-						pstat.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
+			for (Map<String, Object> articleMap : articlesListMap) {
+				articles.add(new Article(articleMap));
 			}
 
 			if (articles.size() == 0) {
