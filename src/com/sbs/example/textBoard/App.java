@@ -3,15 +3,10 @@ package com.sbs.example.textBoard;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import com.sbs.example.textBoard.controller.ArticleController;
 import com.sbs.example.textBoard.controller.MemberController;
-import com.sbs.example.textBoard.util.DBUtil;
-import com.sbs.example.textBoard.util.SecSql;
 
 public class App {
 	public void run() {
@@ -62,13 +57,9 @@ public class App {
 
 	private int action(Connection conn, Scanner sc, String command) {
 
-		MemberController memberController = new MemberController();
-		memberController.setConn(conn);
-		memberController.setScanner(sc);
+		MemberController memberController = new MemberController(conn, sc);
 
-		ArticleController articleController = new ArticleController();
-		articleController.setConn(conn);
-		articleController.setScanner(sc);
+		ArticleController articleController = new ArticleController(conn, sc);
 
 		if (command.equals("member join")) {
 			memberController.join(command);

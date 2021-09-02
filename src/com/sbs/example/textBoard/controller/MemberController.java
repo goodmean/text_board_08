@@ -3,10 +3,16 @@ package com.sbs.example.textBoard.controller;
 import java.sql.Connection;
 import java.util.Scanner;
 
-import com.sbs.example.textBoard.util.DBUtil;
-import com.sbs.example.textBoard.util.SecSql;
+import com.sbs.example.textBoard.service.MemberService;
 
 public class MemberController extends Controller {
+
+	private MemberService memberService;
+
+	public MemberController(Connection conn, Scanner sc) {
+		super(sc);
+		memberService = new MemberService(conn);
+	}
 
 	public void join(String command) {
 		String loginId;
@@ -25,13 +31,7 @@ public class MemberController extends Controller {
 				continue;
 			}
 
-			SecSql sql = new SecSql();
-
-			sql.append("SELECT COUNT(*) > 0");
-			sql.append("FROM `member`");
-			sql.append("WHERE loginId = ?", loginId);
-
-			boolean isLoginIdDup = DBUtil.selectRowBooleanValue(conn, sql);
+			boolean isLoginIdDup = memberService.isLoginIdDup(loginId);
 
 			if (isLoginIdDup) {
 				System.out.printf("%s(은)는 이미 사용중인 로그인 아이디입니다.\n", loginId);
@@ -85,18 +85,8 @@ public class MemberController extends Controller {
 			break;
 
 		}
-
-		SecSql sql = new SecSql();
-
-		sql.append("INSERT INTO `member`");
-		sql.append("SET regDate = NOW()");
-		sql.append(", updateDate = NOW()");
-		sql.append(", loginId = ?", loginId);
-		sql.append(", loginPw = ?", loginPw);
-		sql.append(", `name` = ?", name);
-
-		int id = DBUtil.insert(conn, sql);
-
+		memberService.join(loginId, loginPw, name);
+ 
 		System.out.printf("%s님 환영합니다.\n", name);
 	}
 
