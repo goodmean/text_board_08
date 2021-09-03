@@ -3,6 +3,7 @@ package com.sbs.example.textBoard.service;
 import java.sql.Connection;
 
 import com.sbs.example.textBoard.dao.MemberDao;
+import com.sbs.example.textBoard.dto.Member;
 
 public class MemberService {
 
@@ -20,6 +21,10 @@ public class MemberService {
 
 		return memberDao.join(loginId, loginPw, name);
 
+	}
+
+	public Member getMemberByLoginId(String loginId) {
+		return memberDao.getMemberByLoginId(loginId);
 	}
 
 }
