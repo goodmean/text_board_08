@@ -2,6 +2,7 @@ package com.sbs.example.textBoard.service;
 
 import java.sql.Connection;
 
+import com.sbs.example.textBoard.Container;
 import com.sbs.example.textBoard.dao.MemberDao;
 import com.sbs.example.textBoard.dto.Member;
 
@@ -9,8 +10,8 @@ public class MemberService {
 
 	private MemberDao memberDao;
 
-	public MemberService(Connection conn) {
-		memberDao = new MemberDao(conn);
+	public MemberService() {
+		memberDao = Container.memberDao;
 	}
 
 	public boolean isLoginIdDup(String loginId) {

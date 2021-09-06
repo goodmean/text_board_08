@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
 
+import com.sbs.example.textBoard.Container;
 import com.sbs.example.textBoard.dto.Article;
 import com.sbs.example.textBoard.service.ArticleService;
 
@@ -11,9 +12,8 @@ public class ArticleController extends Controller {
 
 	private ArticleService articleService;
 
-	public ArticleController(Connection conn, Scanner sc) {
-		super(sc);
-		articleService = new ArticleService(conn);
+	public ArticleController() {
+		articleService = Container.articleService;
 	}
 
 	public void write(String command) {
