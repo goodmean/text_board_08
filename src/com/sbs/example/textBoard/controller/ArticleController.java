@@ -23,6 +23,7 @@ public class ArticleController extends Controller {
 
 		String title;
 		String body;
+		int memberid = Container.session.loginedMemberId;
 
 		System.out.println("== 게시글 생성 ==");
 		System.out.printf("제목 : ");
@@ -30,7 +31,7 @@ public class ArticleController extends Controller {
 		System.out.printf("내용 : ");
 		body = sc.nextLine();
 
-		int id = articleService.write(title, body);
+		int id = articleService.write(memberid,title, body);
 
 		System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
 
