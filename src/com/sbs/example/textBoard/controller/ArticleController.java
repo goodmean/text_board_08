@@ -1,8 +1,6 @@
 package com.sbs.example.textBoard.controller;
 
-import java.sql.Connection;
 import java.util.List;
-import java.util.Scanner;
 
 import com.sbs.example.textBoard.Container;
 import com.sbs.example.textBoard.dto.Article;

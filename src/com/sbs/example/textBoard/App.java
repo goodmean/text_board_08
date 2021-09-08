@@ -64,8 +64,9 @@ public class App {
 		MemberController memberController = Container.memberController;
 
 		ArticleController articleController = Container.articleController;
-
-		if (command.equals("member join")) {
+		if (command.equals("member whoami")) {
+			memberController.whoami(command);
+		} else if (command.equals("member join")) {
 			memberController.join(command);
 		} else if (command.equals("member login")) {
 			memberController.login(command);
