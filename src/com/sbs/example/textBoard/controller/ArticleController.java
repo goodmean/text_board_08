@@ -15,6 +15,12 @@ public class ArticleController extends Controller {
 	}
 
 	public void write(String command) {
+
+		if (Container.session.isLogined() == false) {
+			System.out.println("로그인 후 이용해 주세요.");
+			return;
+		}
+
 		String title;
 		String body;
 
@@ -31,6 +37,12 @@ public class ArticleController extends Controller {
 	}
 
 	public void delete(String command) {
+
+		if (Container.session.isLogined() == false) {
+			System.out.println("로그인 후 이용해 주세요.");
+			return;
+		}
+
 		int id = Integer.parseInt(command.split(" ")[2]);
 
 		System.out.printf("== %d번 게시글 삭제 ==\n", id);
@@ -68,6 +80,12 @@ public class ArticleController extends Controller {
 	}
 
 	public void modify(String command) {
+
+		if (Container.session.isLogined() == false) {
+			System.out.println("로그인 후 이용해 주세요.");
+			return;
+		}
+
 		int id = Integer.parseInt(command.split(" ")[2]);
 		String title;
 		String body;
