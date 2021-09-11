@@ -31,7 +31,7 @@ public class ArticleController extends Controller {
 		System.out.printf("내용 : ");
 		body = sc.nextLine();
 
-		int id = articleService.write(memberid,title, body);
+		int id = articleService.write(memberid, title, body);
 
 		System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
 
@@ -112,10 +112,11 @@ public class ArticleController extends Controller {
 			System.out.println("게시물이 존재하지 않습니다.");
 			return;
 		}
-		System.out.println("번호  /  제목");
+		System.out.println("번호 / 		작성날짜 		/	작성자	/   제목");
 
 		for (Article article : articles) {
-			System.out.printf("%d    /   %s\n", article.id, article.title);
+			System.out.printf("%d    /   %s   /	 %s   /   %s\n", article.id, article.regDate, article.extra__writer,
+					article.title);
 		}
 
 	}
